@@ -2,6 +2,7 @@
 
 Клиентская библиотека для сервиса [promopult.org](https://promopult.org).
 
+[![Build Status](https://travis-ci.org/promopult/integra-client.svg?branch=master)](https://travis-ci.org/promopult/integra-client)
 
 ### Установка 
 
