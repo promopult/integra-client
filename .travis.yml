@@ -22,7 +22,7 @@ before_script:
   - composer install
   - |
     if [[ $TRAVIS_PHP_VERSION = 7.3 ]]; then
-      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+      PHPUNIT_FLAGS="--coverage-text --coverage-clover=coverage.xml"
     fi
 
 script:
@@ -32,5 +32,5 @@ after_script:
   - |
     if [[ $TRAVIS_PHP_VERSION = 7.3 ]]; then
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      php ocular.phar code-coverage:upload --format=php-clover coverage.xml
     fi
