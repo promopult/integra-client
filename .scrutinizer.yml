@@ -1,10 +1,6 @@
 imports:
   - php
 build:
-  tests:
-    override:
-      - coverage:
-          format: clover
   nodes:
     analysis:
       tests:
