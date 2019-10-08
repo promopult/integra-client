@@ -3,7 +3,7 @@
  * @project Promopult Integra client library
  */
 
-namespace Promopult\Integra\Tests;
+namespace Promopult\Integra\Test;
 
 class CryptMock implements \Promopult\Integra\CryptInterface
 {

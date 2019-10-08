@@ -34,8 +34,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Promopult\\Integra\\Tests\\": [
-                "tests/"
+            "Promopult\\Integra\\Test\\": [
+                "test/"
             ]
         }
     },

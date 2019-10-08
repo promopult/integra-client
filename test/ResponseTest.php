@@ -1,6 +1,6 @@
 <?php
 
-namespace Promopult\Integra\Tests;
+namespace Promopult\Integra\Test;
 
 class ResponseTest extends \PHPUnit\Framework\TestCase
 {
