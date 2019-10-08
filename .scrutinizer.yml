@@ -1,12 +1,15 @@
 imports:
   - php
 build:
+  tests:
+    override:
+      - coverage:
+          format: clover
   nodes:
     analysis:
       tests:
         override:
           - php-scrutinizer-run
-
 tools:
   external_code_coverage:
     timeout: 1800 # Timeout in seconds.
