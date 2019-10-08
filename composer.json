@@ -40,6 +40,7 @@
         }
     },
     "scripts": {
+        "test": "phpunit",
         "cs-check": "phpcs",
         "cs-fix": "phpcbf"
     },

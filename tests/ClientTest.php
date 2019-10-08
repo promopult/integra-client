@@ -13,7 +13,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider methodDataProvider
      */
-    public function testMethods(string $method, array $correctData, array $incorrectData)
+    public function testMethods(string $method, array $correctData, array $incorrectData): void
     {
         $client = $this->createClient();
 
@@ -24,7 +24,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         // ToDo: check response data
     }
 
-    private function createClient()
+    private function createClient(): \Promopult\Integra\Client
     {
         $mock = new \GuzzleHttp\Handler\MockHandler([
             // Correct API response
@@ -56,7 +56,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    public function methodDataProvider()
+    public function methodDataProvider(): array
     {
         // methodName | correctParams | incorrectParams
         return [
