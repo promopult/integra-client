@@ -18,12 +18,12 @@ interface CryptInterface
      * @param string $key
      * @return string
      */
-    public function encode(string $string, string $key): string;
+    public function encrypt(string $string, string $key): string;
 
     /**
      * @param string $string
      * @param string $key
      * @return string
      */
-    public function decode(string $string, string $key): string;
+    public function decrypt(string $string, string $key): string;
 }

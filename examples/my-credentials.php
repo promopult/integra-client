@@ -8,12 +8,12 @@ $identity = new \Promopult\Integra\Identity(
 );
 
 $crypt = new class implements \Promopult\Integra\CryptInterface {
-    public function encode(string $s, string $ck): string {
+    public function encrypt(string $s, string $ck): string {
         $r = '';
         for ($i = 0; $i < strlen($s); $i++) {
             $r .= chr(ord(substr($s, $i, 1)) + ord(substr($ck, ($i % strlen($ck)) - 1, 1)));
         }
         return base64_encode($r);
     }
-    public function decode(string $string, string $key): string { return ''; }
+    public function decrypt(string $string, string $key): string { return ''; }
 };

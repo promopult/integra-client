@@ -66,7 +66,7 @@ final class Request implements \Promopult\Integra\RequestInterface
             . $this->method . '?'
             . self::PARAM_NAME . '=' . self::PARAM_VALUE_PREFIX
             . $this->identity->getHash()
-            . urlencode($this->crypt->encode(json_encode($this->args), $this->identity->getCryptKey()))
+            . urlencode($this->crypt->encrypt(json_encode($this->args), $this->identity->getCryptKey()))
         ;
     }
 }
