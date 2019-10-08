@@ -1,6 +1,6 @@
 <?php
 
-namespace Promopult\Integra\Test;
+namespace Promopult\Integra\Tests;
 
 class IdentityMock implements \Promopult\Integra\IdentityInterface
 {

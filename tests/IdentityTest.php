@@ -5,8 +5,6 @@
 
 namespace Promopult\Integra\Test;
 
-use Promopult\Integra\Identity;
-
 
 class IdentityTest extends \PHPUnit\Framework\TestCase
 {

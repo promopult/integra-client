@@ -3,7 +3,7 @@
  * @project Promopult Integra client library
  */
 
-namespace Promopult\Integra\Test;
+namespace Promopult\Integra\Tests;
 
 class ClientTest extends \PHPUnit\Framework\TestCase
 {
@@ -49,8 +49,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         ]);
 
         return new \Promopult\Integra\Client(
-            new \Promopult\Integra\Test\IdentityMock,
-            new \Promopult\Integra\Test\CryptMock,
+            new \Promopult\Integra\Tests\IdentityMock,
+            new \Promopult\Integra\Tests\CryptMock,
             new \Http\Adapter\Guzzle6\Client($httpClient)
         );
     }
