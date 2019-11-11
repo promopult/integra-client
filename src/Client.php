@@ -144,7 +144,7 @@ class Client implements \Promopult\Integra\TransportInterface
      */
     public function getLastHttpResponseAsString(): string
     {
-        if ($this->lastHttpResponse instanceof \Psr\Http\Message\MessageInterface) {
+        if ($this->lastHttpResponse instanceof \Psr\Http\Message\ResponseInterface) {
             return \GuzzleHttp\Psr7\str($this->getLastHttpResponse());
         }
 
@@ -156,7 +156,7 @@ class Client implements \Promopult\Integra\TransportInterface
      */
     public function getLastHttpRequestAsString(): string
     {
-        if ($this->lastHttpRequest instanceof \Psr\Http\Message\MessageInterface) {
+        if ($this->lastHttpRequest instanceof \Psr\Http\Message\RequestInterface) {
             return \GuzzleHttp\Psr7\str($this->getLastHttpRequest());
         }
 
