@@ -45,6 +45,16 @@ class Client implements \Promopult\Integra\TransportInterface
     protected $httpClient;
 
     /**
+     * @var \Psr\Http\Message\RequestInterface
+     */
+    protected $lastHttpRequest;
+
+    /**
+     * @var \Psr\Http\Message\ResponseInterface
+     */
+    protected $lastHttpResponse;
+
+    /**
      * Client constructor.
      *
      * @param \Promopult\Integra\IdentityInterface $identity
@@ -88,7 +98,11 @@ class Client implements \Promopult\Integra\TransportInterface
             'Content-Type' => 'application/json'
         ]);
 
+        $this->lastHttpRequest = $httpRequest;
+
         $httpResponse = $this->getHttpClient()->sendRequest($httpRequest);
+
+        $this->lastHttpResponse = $httpResponse;
 
         return \Promopult\Integra\Response::fromHttpResponse($httpResponse);
     }
@@ -103,5 +117,49 @@ class Client implements \Promopult\Integra\TransportInterface
         }
 
         return $this->httpClient;
+    }
+
+    /***************/
+    /* Debug stuff */
+    /***************/
+
+    /**
+     * @return \Psr\Http\Message\ResponseInterface|null
+     */
+    public function getLastHttpResponse(): ?\Psr\Http\Message\ResponseInterface
+    {
+        return $this->lastHttpResponse;
+    }
+
+    /**
+     * @return \Psr\Http\Message\RequestInterface|null
+     */
+    public function getLastHttpRequest(): ?\Psr\Http\Message\RequestInterface
+    {
+        return $this->lastHttpRequest;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastHttpResponseAsString(): string
+    {
+        if ($this->lastHttpResponse instanceof \Psr\Http\Message\MessageInterface) {
+            return \GuzzleHttp\Psr7\str($this->getLastHttpResponse());
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastHttpRequestAsString(): string
+    {
+        if ($this->lastHttpRequest instanceof \Psr\Http\Message\MessageInterface) {
+            return \GuzzleHttp\Psr7\str($this->getLastHttpRequest());
+        }
+
+        return '';
     }
 }
