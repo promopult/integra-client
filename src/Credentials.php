@@ -11,7 +11,7 @@ namespace Promopult\Integra;
  * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
  * @since 1.0
  */
-final class Identity implements \Promopult\Integra\IdentityInterface
+final class Credentials implements \Promopult\Integra\CredentialsInterface
 {
     /**
      * @var string

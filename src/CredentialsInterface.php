@@ -6,12 +6,12 @@
 namespace Promopult\Integra;
 
 /**
- * Interface IdentityInterface
+ * Interface CredentialsInterface
  *
  * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
  * @since 1.0
  */
-interface IdentityInterface
+interface CredentialsInterface
 {
     /**
      * Returns 32-symbol identity hash

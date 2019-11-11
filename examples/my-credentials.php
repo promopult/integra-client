@@ -1,6 +1,6 @@
 <?php
 
-$identity = new \Promopult\Integra\Identity(
+$identity = new \Promopult\Integra\Credentials(
     getenv('__HASH__'),
     getenv('__CRYPT_KEY__'),
     getenv('__PARTNER_PATH__'),

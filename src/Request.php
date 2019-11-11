@@ -27,7 +27,7 @@ final class Request implements \Promopult\Integra\RequestInterface
     private $args;
 
     /**
-     * @var IdentityInterface
+     * @var CredentialsInterface
      */
     private $identity;
 
@@ -41,13 +41,13 @@ final class Request implements \Promopult\Integra\RequestInterface
      *
      * @param string $method
      * @param array $args
-     * @param IdentityInterface $identity
+     * @param CredentialsInterface $identity
      * @param CryptInterface $crypt
      */
     public function __construct(
         string $method,
         array $args,
-        IdentityInterface $identity,
+        CredentialsInterface $identity,
         CryptInterface $crypt
     ) {
         $this->method = $method;

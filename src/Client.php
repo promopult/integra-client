@@ -30,7 +30,7 @@ namespace Promopult\Integra;
 class Client implements \Promopult\Integra\TransportInterface
 {
     /**
-     * @var \Promopult\Integra\IdentityInterface
+     * @var \Promopult\Integra\CredentialsInterface
      */
     protected $identity;
 
@@ -57,12 +57,12 @@ class Client implements \Promopult\Integra\TransportInterface
     /**
      * Client constructor.
      *
-     * @param \Promopult\Integra\IdentityInterface $identity
+     * @param \Promopult\Integra\CredentialsInterface $identity
      * @param \Promopult\Integra\CryptInterface $crypt
      * @param \Psr\Http\Client\ClientInterface $httpClient
      */
     public function __construct(
-        \Promopult\Integra\IdentityInterface $identity,
+        \Promopult\Integra\CredentialsInterface $identity,
         \Promopult\Integra\CryptInterface $crypt,
         \Psr\Http\Client\ClientInterface $httpClient = null
     ) {

@@ -2,7 +2,7 @@
 
 namespace Promopult\Integra\Test;
 
-class IdentityMock implements \Promopult\Integra\IdentityInterface
+class CredentialsMock implements \Promopult\Integra\CredentialsInterface
 {
     public function getHash(): string { return 'hash'; }
     public function getCryptKey(): string { return 'key'; }

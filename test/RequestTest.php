@@ -9,7 +9,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request =  new \Promopult\Integra\Request(
             'hello',
             ['name' => 'name'],
-            new \Promopult\Integra\Test\IdentityMock,
+            new \Promopult\Integra\Test\CredentialsMock,
             new \Promopult\Integra\Test\CryptMock
         );
 
