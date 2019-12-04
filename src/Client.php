@@ -24,6 +24,7 @@ namespace Promopult\Integra;
  * @method \Promopult\Integra\Response readMessages(array $data)
  * @method \Promopult\Integra\Response changeUrl(array $data)
  * @method \Promopult\Integra\Response getFinSummaryByDate(array $data)
+ * @method \Promopult\Integra\Response attachYandexMetrikaCounter(array $data)
  *
  * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
  * @since 1.0
