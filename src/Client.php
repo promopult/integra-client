@@ -115,7 +115,7 @@ class Client implements \Promopult\Integra\TransportInterface
     protected function getHttpClient(): \Psr\Http\Client\ClientInterface
     {
         if (empty($this->httpClient)) {
-            $this->httpClient = new \Http\Adapter\Guzzle6\Client;
+            $this->httpClient = \Http\Adapter\Guzzle6\Client::createWithConfig(['verify' => false]);
         }
 
         return $this->httpClient;
