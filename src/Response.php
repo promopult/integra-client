@@ -47,7 +47,7 @@ final class Response implements \Promopult\Integra\ResponseInterface
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return static
      */
-    public static function fromHttpResponse(\Psr\Http\Message\ResponseInterface $response) : self
+    public static function fromHttpResponse(\Psr\Http\Message\ResponseInterface $response): self
     {
         $bodyData = json_decode($response->getBody()->getContents(), true);
 

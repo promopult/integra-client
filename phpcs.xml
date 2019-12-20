@@ -6,8 +6,9 @@
     <arg value="p"/>
     <arg name="colors"/>
 
-    <!-- inherit rules from: PSR-2 -->
-    <rule ref="PSR2">
+    <!-- inherit rules from: PSR-12 -->
+    <rule ref="PSR12">
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock" />
         <exclude name="PSR1.Classes.ClassDeclaration"/>
         <exclude name="PSR1.Files.SideEffects"/>
         <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace"/>

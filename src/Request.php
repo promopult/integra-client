@@ -13,8 +13,8 @@ namespace Promopult\Integra;
  */
 final class Request implements \Promopult\Integra\RequestInterface
 {
-    const PARAM_NAME = 'k';
-    const PARAM_VALUE_PREFIX = 'zaa';
+    private const PARAM_NAME = 'k';
+    private const PARAM_VALUE_PREFIX = 'zaa';
 
     /**
      * @var string
