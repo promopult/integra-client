@@ -51,7 +51,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         return new \Promopult\Integra\Client(
             new \Promopult\Integra\Test\CredentialsMock,
             new \Promopult\Integra\Test\CryptMock,
-            new \Http\Adapter\Guzzle6\Client($httpClient)
+            $httpClient
         );
     }
 

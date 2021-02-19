@@ -66,7 +66,7 @@ class Client implements \Promopult\Integra\TransportInterface
     public function __construct(
         \Promopult\Integra\CredentialsInterface $identity,
         \Promopult\Integra\CryptInterface $crypt,
-        \Psr\Http\Client\ClientInterface $httpClient = null
+        \Psr\Http\Client\ClientInterface $httpClient
     ) {
         $this->identity = $identity;
         $this->crypt = $crypt;
@@ -114,10 +114,6 @@ class Client implements \Promopult\Integra\TransportInterface
      */
     protected function getHttpClient(): \Psr\Http\Client\ClientInterface
     {
-        if (empty($this->httpClient)) {
-            $this->httpClient = \Http\Adapter\Guzzle6\Client::createWithConfig(['verify' => false]);
-        }
-
         return $this->httpClient;
     }
 

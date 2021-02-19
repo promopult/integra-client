@@ -17,3 +17,6 @@ $crypt = new class implements \Promopult\Integra\CryptInterface {
     }
     public function decrypt(string $string, string $key): string { return ''; }
 };
+
+
+$httpClient = new \GuzzleHttp\Client;
