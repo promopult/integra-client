@@ -2,12 +2,10 @@
 
 require_once '../vendor/autoload.php';
 
-include 'my-credentials.php';
-
 $client = new \Promopult\Integra\Client(
-    $identity,
-    $crypt,
-    $httpClient
+    new \Promopult\Integra\Credentials(getenv('__HASH__'), getenv('__CRYPT_KEY__')),
+    new \AcmeCrypt(),
+    new \GuzzleHttp\Client
 );
 
 $response = $client->hello([

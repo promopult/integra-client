@@ -15,7 +15,7 @@ $ composer require promopult/integra-client
 ```php
 "require": {
   ...
-  "promopult/integra-client": "*"
+  "promopult/integra-client": "~2.0"
   ...
 }
 ```
@@ -24,7 +24,11 @@ $ composer require promopult/integra-client
 Смотрите папку [examples](/examples).
 
 ```php
-$client = new \Promopult\Integra\Client($identity, $crypt);
+$client = new \Promopult\Integra\Client(
+    new \Promopult\Integra\Credentials(getenv('__HASH__'), getenv('__KEY__')), 
+    new \AcmeCrypt(),
+    new \GuzzleHttp\Client()
+);
 
 $response = $client->hello([
     'name' => 'Dmitry'
