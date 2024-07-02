@@ -16,9 +16,9 @@ namespace Promopult\Integra;
  * @method \Promopult\Integra\Response doPayment(array $data)
  * @method \Promopult\Integra\Response confirmPayment(array $data)
  * @method \Promopult\Integra\Response declinePayment(array $data)
- * @method \Promopult\Integra\Response getUserData(array $data)
+ * @method \Promopult\Integra\Response getUserData(array $data, string $userHash)
  * @method \Promopult\Integra\Response getUsersData(array $data)
- * @method \Promopult\Integra\Response getUserMessages(array $data)
+ * @method \Promopult\Integra\Response getUserMessages(array $data, string $userHash)
  * @method \Promopult\Integra\Response getMessages(array $data)
  * @method \Promopult\Integra\Response getMessageTemplates(array $data)
  * @method \Promopult\Integra\Response readMessages(array $data)
@@ -85,7 +85,8 @@ class Client implements \Promopult\Integra\TransportInterface
             $methodName,
             $ars[0] ?? [],
             $this->identity,
-            $this->crypt
+            $this->crypt,
+            $ars[1] ?? null
         );
 
         return $this->send($request);

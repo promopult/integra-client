@@ -37,6 +37,11 @@ final class Request implements \Promopult\Integra\RequestInterface
     private $crypt;
 
     /**
+     * @var ?string
+     */
+    private $userHash;
+
+    /**
      * Request constructor.
      *
      * @param string $method
@@ -48,25 +53,30 @@ final class Request implements \Promopult\Integra\RequestInterface
         string $method,
         array $args,
         CredentialsInterface $identity,
-        CryptInterface $crypt
+        CryptInterface $crypt,
+        ?string $userHash = null
     ) {
         $this->method = $method;
         $this->args = $args;
         $this->identity = $identity;
         $this->crypt = $crypt;
+        $this->userHash = $userHash;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCryptUrl(): string
+    public function getCryptUrl($user_hash = null): string
     {
-        return $this->identity->getApiHost() . '/'
-            . $this->identity->getPartnerPath() . '/'
-            . $this->method . '?'
-            . self::PARAM_NAME . '=' . self::PARAM_VALUE_PREFIX
-            . $this->identity->getHash()
-            . urlencode($this->crypt->encrypt(json_encode($this->args), $this->identity->getCryptKey()))
-        ;
+        return sprintf(
+            '%s/%s/%s?%s=%s%s%s',
+            $this->identity->getApiHost(),
+            $this->identity->getPartnerPath(),
+            $this->method,
+            self::PARAM_NAME,
+            self::PARAM_VALUE_PREFIX,
+            ($this->userHash ?? $this->identity->getHash()),
+            urlencode($this->crypt->encrypt(json_encode($this->args), $this->identity->getCryptKey()))
+        );
     }
 }
