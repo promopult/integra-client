@@ -5,6 +5,8 @@
 
 namespace Promopult\Integra;
 
+use Promopult\Integra\Exceptions\InvalidResponseException;
+
 /**
  * Class Response
  *
@@ -13,51 +15,32 @@ namespace Promopult\Integra;
  */
 final class Response implements \Promopult\Integra\ResponseInterface
 {
-    /**
-     * @var string
-     */
-    private $version;
-
-    /**
-     * @var bool
-     */
-    private $hasError;
-
-    /**
-     * @var int
-     */
-    private $statusCode;
-
-    /**
-     * @var string
-     */
-    private $statusMessage;
-
-    /**
-     * @var array
-     */
-    private $notices;
+    private string $version;
+    private bool $hasError;
+    private int $statusCode;
+    private string $statusMessage;
+    private array $notices;
 
     /**
      * @var mixed
      */
     private $data;
 
-    /**
-     * @param \Psr\Http\Message\ResponseInterface $response
-     * @return static
-     */
     public static function fromHttpResponse(\Psr\Http\Message\ResponseInterface $response): self
     {
-        $bodyData = json_decode($response->getBody()->getContents(), true);
+        $parsedBody = json_decode($response->getBody()->__toString(), true);
 
-        return new static(
-            (string)$bodyData['version'],
-            (bool)$bodyData['error'],
-            (int)$bodyData['status']['code'],
-            (string)$bodyData['status']['message'],
-            (array)$bodyData['notices'],
-            $bodyData['data'] ?? null
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidResponseException(json_last_error_msg());
+        }
+
+        return new self(
+            (string) $parsedBody['version'],
+            (bool) $parsedBody['error'],
+            (int) $parsedBody['status']['code'],
+            (string) $parsedBody['status']['message'],
+            (array) $parsedBody['notices'],
+            $parsedBody['data'] ?? null
         );
     }
 

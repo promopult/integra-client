@@ -73,12 +73,6 @@ class Client implements \Promopult\Integra\TransportInterface
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * @param string $methodName
-     * @param array $ars
-     * @return ResponseInterface
-     * @throws \Psr\Http\Client\ClientExceptionInterface
-     */
     public function __call(string $methodName, array $ars = []): \Promopult\Integra\ResponseInterface
     {
         $request = new \Promopult\Integra\Request(
