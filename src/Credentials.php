@@ -1,46 +1,14 @@
 <?php
-/**
- * @project Promopult Integra client library
- */
 
 namespace Promopult\Integra;
 
-/**
- * Class Identity
- *
- * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
- * @since 1.0
- */
 final class Credentials implements \Promopult\Integra\CredentialsInterface
 {
-    /**
-     * @var string
-     */
-    private $hash;
+    private string $hash;
+    private string $cryptKey;
+    private string $partnerPath;
+    private string $apiHost;
 
-    /**
-     * @var string
-     */
-    private $cryptKey;
-
-    /**
-     * @var string
-     */
-    private $partnerPath;
-
-    /**
-     * @var string
-     */
-    private $apiHost;
-
-    /**
-     * Identity constructor.
-     *
-     * @param string $hash
-     * @param string $cryptKey
-     * @param string $partnerPath
-     * @param string $apiHost
-     */
     public function __construct(
         string $hash,
         string $cryptKey,

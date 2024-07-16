@@ -1,16 +1,7 @@
 <?php
-/**
- * @project Promopult Integra client library
- */
 
 namespace Promopult\Integra;
 
-/**
- * Interface CredentialsInterface
- *
- * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
- * @since 1.0
- */
 interface CredentialsInterface
 {
     /**

@@ -1,18 +1,9 @@
 <?php
-/**
- * @project Promopult Integra client library
- */
 
 namespace Promopult\Integra;
 
 use Promopult\Integra\Exceptions\InvalidResponseException;
 
-/**
- * Class Response
- *
- * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
- * @since 1.0
- */
 final class Response implements \Promopult\Integra\ResponseInterface
 {
     private string $version;

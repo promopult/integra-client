@@ -1,16 +1,7 @@
 <?php
-/**
- * @project Promopult Integra client library
- */
 
 namespace Promopult\Integra;
 
-/**
- * Class Request
- *
- * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
- * @since 1.0
- */
 final class Request implements \Promopult\Integra\RequestInterface
 {
     private const PARAM_NAME = 'k';

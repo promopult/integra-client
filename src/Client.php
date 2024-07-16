@@ -1,13 +1,14 @@
 <?php
-/**
- * @project Promopult Integra client library
- */
 
 namespace Promopult\Integra;
 
+use Promopult\Integra\Exceptions\InvalidResponseException;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface as Psr7Request;
+use Psr\Http\Message\ResponseInterface as Psr7Response;
+
 /**
- * Class Client
- *
  * @method \Promopult\Integra\Response hello(array $data)
  * @method \Promopult\Integra\Response createUser(array $data)
  * @method \Promopult\Integra\Response cryptLogin(array $data)
@@ -25,60 +26,35 @@ namespace Promopult\Integra;
  * @method \Promopult\Integra\Response changeUrl(array $data)
  * @method \Promopult\Integra\Response getFinSummaryByDate(array $data)
  * @method \Promopult\Integra\Response attachYandexMetrikaCounter(array $data)
- *
- * @author Dmitry Gladyshev <dgladyshev@promopult.ru>
- * @since 1.0
  */
 class Client implements \Promopult\Integra\TransportInterface
 {
-    /**
-     * @var \Promopult\Integra\CredentialsInterface
-     */
-    protected $identity;
+    protected CredentialsInterface $credentials;
+    protected CryptInterface $crypt;
+    protected ClientInterface $httpClient;
+    protected ?Psr7Request $lastHttpRequest;
+    protected ?Psr7Response $lastHttpResponse;
 
-    /**
-     * @var \Promopult\Integra\CryptInterface
-     */
-    protected $crypt;
-
-    /**
-     * @var \Psr\Http\Client\ClientInterface
-     */
-    protected $httpClient;
-
-    /**
-     * @var \Psr\Http\Message\RequestInterface
-     */
-    protected $lastHttpRequest;
-
-    /**
-     * @var \Psr\Http\Message\ResponseInterface
-     */
-    protected $lastHttpResponse;
-
-    /**
-     * Client constructor.
-     *
-     * @param \Promopult\Integra\CredentialsInterface $identity
-     * @param \Promopult\Integra\CryptInterface $crypt
-     * @param \Psr\Http\Client\ClientInterface $httpClient
-     */
     public function __construct(
-        \Promopult\Integra\CredentialsInterface $identity,
-        \Promopult\Integra\CryptInterface $crypt,
-        \Psr\Http\Client\ClientInterface $httpClient
+        CredentialsInterface $identity,
+        CryptInterface $crypt,
+        ClientInterface $httpClient
     ) {
-        $this->identity = $identity;
+        $this->credentials = $identity;
         $this->crypt = $crypt;
         $this->httpClient = $httpClient;
     }
 
-    public function __call(string $methodName, array $ars = []): \Promopult\Integra\ResponseInterface
+    /**
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseException
+     */
+    public function __call(string $methodName, array $ars = []): ResponseInterface
     {
-        $request = new \Promopult\Integra\Request(
+        $request = new Request(
             $methodName,
             $ars[0] ?? [],
-            $this->identity,
+            $this->credentials,
             $this->crypt,
             $ars[1] ?? null
         );
@@ -92,24 +68,16 @@ class Client implements \Promopult\Integra\TransportInterface
     public function send(\Promopult\Integra\RequestInterface $request): \Promopult\Integra\ResponseInterface
     {
         $httpRequest = new \GuzzleHttp\Psr7\Request('POST', $request->getCryptUrl(), [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
 
         $this->lastHttpRequest = $httpRequest;
 
-        $httpResponse = $this->getHttpClient()->sendRequest($httpRequest);
+        $httpResponse = $this->httpClient->sendRequest($httpRequest);
 
         $this->lastHttpResponse = $httpResponse;
 
         return \Promopult\Integra\Response::fromHttpResponse($httpResponse);
-    }
-
-    /**
-     * @return \Psr\Http\Client\ClientInterface
-     */
-    protected function getHttpClient(): \Psr\Http\Client\ClientInterface
-    {
-        return $this->httpClient;
     }
 
     /***************/
@@ -132,9 +100,6 @@ class Client implements \Promopult\Integra\TransportInterface
         return $this->lastHttpRequest;
     }
 
-    /**
-     * @return string
-     */
     public function getLastHttpResponseAsString(): string
     {
         if ($this->lastHttpResponse instanceof \Psr\Http\Message\ResponseInterface) {
@@ -144,9 +109,6 @@ class Client implements \Promopult\Integra\TransportInterface
         return '';
     }
 
-    /**
-     * @return string
-     */
     public function getLastHttpRequestAsString(): string
     {
         if ($this->lastHttpRequest instanceof \Psr\Http\Message\RequestInterface) {
@@ -154,5 +116,10 @@ class Client implements \Promopult\Integra\TransportInterface
         }
 
         return '';
+    }
+
+    public function getCredentials(): CredentialsInterface
+    {
+        return $this->credentials;
     }
 }
