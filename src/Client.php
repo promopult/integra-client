@@ -27,7 +27,7 @@ use Psr\Http\Message\ResponseInterface as Psr7Response;
  * @method \Promopult\Integra\Response getFinSummaryByDate(array $data)
  * @method \Promopult\Integra\Response attachYandexMetrikaCounter(array $data)
  */
-class Client implements \Promopult\Integra\TransportInterface
+class Client
 {
     protected CredentialsInterface $credentials;
     protected CryptInterface $crypt;
@@ -49,35 +49,36 @@ class Client implements \Promopult\Integra\TransportInterface
      * @throws ClientExceptionInterface
      * @throws InvalidResponseException
      */
-    public function __call(string $methodName, array $ars = []): ResponseInterface
-    {
+    public function request(
+        string $methodName,
+        array $data,
+        ?string $userHash = null,
+        array $queryParams = []
+    ): \Promopult\Integra\Response {
         $request = new Request(
             $methodName,
-            $ars[0] ?? [],
+            $data,
             $this->credentials,
             $this->crypt,
-            $ars[1] ?? null
+            $userHash,
+            $queryParams
         );
 
         return $this->send($request);
     }
 
     /**
-     * {@inheritDoc}
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseException
      */
-    public function send(\Promopult\Integra\RequestInterface $request): \Promopult\Integra\ResponseInterface
+    public function __call(string $methodName, array $ars = []): \Promopult\Integra\Response
     {
-        $httpRequest = new \GuzzleHttp\Psr7\Request('POST', $request->getCryptUrl(), [
-            'Content-Type' => 'application/json',
-        ]);
-
-        $this->lastHttpRequest = $httpRequest;
-
-        $httpResponse = $this->httpClient->sendRequest($httpRequest);
-
-        $this->lastHttpResponse = $httpResponse;
-
-        return \Promopult\Integra\Response::fromHttpResponse($httpResponse);
+        return $this->request(
+            $methodName,
+            $ars[0],         // data
+            $ars[1] ?? null, // userHash
+            $ars[2] ?? []    // queryParams
+        );
     }
 
     /***************/
@@ -121,5 +122,22 @@ class Client implements \Promopult\Integra\TransportInterface
     public function getCredentials(): CredentialsInterface
     {
         return $this->credentials;
+    }
+
+    /* Protected */
+
+    protected function send(\Promopult\Integra\Request $request): \Promopult\Integra\Response
+    {
+        $httpRequest = new \GuzzleHttp\Psr7\Request('POST', $request->getCryptUrl(), [
+            'Content-Type' => 'application/json',
+        ]);
+
+        $this->lastHttpRequest = $httpRequest;
+
+        $httpResponse = $this->httpClient->sendRequest($httpRequest);
+
+        $this->lastHttpResponse = $httpResponse;
+
+        return \Promopult\Integra\Response::fromHttpResponse($httpResponse);
     }
 }

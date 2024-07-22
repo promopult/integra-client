@@ -4,7 +4,7 @@ namespace Promopult\Integra;
 
 use Promopult\Integra\Exceptions\InvalidResponseException;
 
-final class Response implements \Promopult\Integra\ResponseInterface
+final class Response
 {
     private string $version;
     private bool $hasError;

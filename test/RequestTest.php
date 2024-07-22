@@ -11,6 +11,8 @@ class RequestTest extends \PHPUnit\Framework\TestCase
             ['name' => 'name'],
             new \Promopult\Integra\Test\CredentialsMock,
             new \Promopult\Integra\Test\CryptMock,
+            null,
+            []
         );
 
         $this->assertEquals('host/path/hello?k=zaahash%7B%22name%22%3A%22name%22%7D', $request->getCryptUrl());
@@ -23,9 +25,27 @@ class RequestTest extends \PHPUnit\Framework\TestCase
             ['name' => 'name'],
             new \Promopult\Integra\Test\CredentialsMock,
             new \Promopult\Integra\Test\CryptMock,
-            'userhash'
+            'userhash',
+            []
         );
 
         $this->assertEquals('host/path/hello?k=zaauserhash%7B%22name%22%3A%22name%22%7D', $request->getCryptUrl());
+    }
+
+    public function testGetCryptUrlWithUserHashAndQueryParams()
+    {
+        $request =  new \Promopult\Integra\Request(
+            'hello',
+            ['name' => 'name'],
+            new \Promopult\Integra\Test\CredentialsMock,
+            new \Promopult\Integra\Test\CryptMock,
+            'userhash',
+            ['p1' => 'abc']
+        );
+
+        $this->assertEquals(
+            'host/path/hello?k=zaauserhash%7B%22name%22%3A%22name%22%7D&p1=abc',
+            $request->getCryptUrl()
+        );
     }
 }

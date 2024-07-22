@@ -15,7 +15,7 @@ $ composer require promopult/integra-client
 ```php
 "require": {
   ...
-  "promopult/integra-client": "~2.0"
+  "promopult/integra-client": "*"
   ...
 }
 ```
