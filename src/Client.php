@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface as Psr7Response;
  * @method \Promopult\Integra\Response doPayment(array $data)
  * @method \Promopult\Integra\Response confirmPayment(array $data)
  * @method \Promopult\Integra\Response declinePayment(array $data)
- * @method \Promopult\Integra\Response getUserData(array $data, string $userHash)
+ * @method \Promopult\Integra\Response getUserData(array $data)
  * @method \Promopult\Integra\Response getUsersData(array $data)
  * @method \Promopult\Integra\Response getUserMessages(array $data, string $userHash)
  * @method \Promopult\Integra\Response getMessages(array $data)
