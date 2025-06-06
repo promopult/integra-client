@@ -53,7 +53,7 @@ class Client
         string $methodName,
         array $data,
         ?string $userHash = null,
-        array $queryParams = [],
+        ?array $queryParams = null,
         ?array $post = null
     ): \Promopult\Integra\Response {
         $request = new Request(
