@@ -53,7 +53,8 @@ class Client
         string $methodName,
         array $data,
         ?string $userHash = null,
-        array $queryParams = []
+        array $queryParams = [],
+        ?array $post = null
     ): \Promopult\Integra\Response {
         $request = new Request(
             $methodName,
@@ -61,7 +62,8 @@ class Client
             $this->credentials,
             $this->crypt,
             $userHash,
-            $queryParams
+            $queryParams,
+            $post
         );
 
         return $this->send($request);
@@ -128,9 +130,14 @@ class Client
 
     protected function send(\Promopult\Integra\Request $request): \Promopult\Integra\Response
     {
-        $httpRequest = new \GuzzleHttp\Psr7\Request('POST', $request->getCryptUrl(), [
-            'Content-Type' => 'application/json',
-        ]);
+        $httpRequest = new \GuzzleHttp\Psr7\Request(
+            'POST',
+            $request->getCryptUrl(),
+            [
+                'Content-Type' => 'application/json',
+            ],
+            $request->getPost()
+        );
 
         $this->lastHttpRequest = $httpRequest;
 

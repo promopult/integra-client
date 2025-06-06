@@ -2,6 +2,8 @@
 
 namespace Promopult\Integra;
 
+use GuzzleHttp\Psr7\Stream;
+
 final class Request
 {
     private string $method;
@@ -10,6 +12,7 @@ final class Request
     private CryptInterface $crypt;
     private ?string $userHash;
     private ?array $queryParams;
+    private ?array $post;
 
     public function __construct(
         string $method,
@@ -17,7 +20,8 @@ final class Request
         CredentialsInterface $identity,
         CryptInterface $crypt,
         ?string $userHash,
-        array $queryParams
+        ?array $queryParams,
+        ?array $post
     ) {
         $this->method = $method;
         $this->args = $args;
@@ -25,6 +29,7 @@ final class Request
         $this->crypt = $crypt;
         $this->userHash = $userHash;
         $this->queryParams = $queryParams;
+        $this->post = $post;
     }
 
     public function getCryptUrl(): string
@@ -34,12 +39,13 @@ final class Request
             $this->identity->getCryptKey()
         );
 
-        $queryData = array_merge(
-            [
-                'k' => 'zaa' . ($this->userHash ?? $this->identity->getHash()) . $code
-            ],
-            $this->queryParams
-        );
+        $queryData = [
+            'k' => 'zaa' . ($this->userHash ?? $this->identity->getHash()) . $code,
+        ];
+
+        if ($this->queryParams !== null) {
+            $queryData = array_merge($queryData, $this->queryParams);
+        }
 
         return sprintf(
             '%s/%s/%s?%s',
@@ -48,5 +54,14 @@ final class Request
             $this->method,
             http_build_query($queryData)
         );
+    }
+
+    public function getPost(): ?string
+    {
+        if (empty($this->post)) {
+            return null;
+        }
+
+        return json_encode($this->post);
     }
 }
