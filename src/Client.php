@@ -5,8 +5,8 @@ namespace Promopult\Integra;
 use Promopult\Integra\Exceptions\InvalidResponseException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestInterface as Psr7Request;
-use Psr\Http\Message\ResponseInterface as Psr7Response;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
+use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
 
 /**
  * @method \Promopult\Integra\Response hello(array $data)
@@ -32,8 +32,9 @@ class Client
     protected CredentialsInterface $credentials;
     protected CryptInterface $crypt;
     protected ClientInterface $httpClient;
-    protected ?Psr7Request $lastHttpRequest;
-    protected ?Psr7Response $lastHttpResponse;
+
+    protected ?Psr7RequestInterface $lastHttpRequest = null;
+    protected ?Psr7ResponseInterface $lastHttpResponse = null;
 
     public function __construct(
         CredentialsInterface $identity,
@@ -46,6 +47,7 @@ class Client
     }
 
     /**
+     * @throws \Throwable
      * @throws ClientExceptionInterface
      * @throws InvalidResponseException
      */
@@ -72,6 +74,7 @@ class Client
     /**
      * @throws ClientExceptionInterface
      * @throws InvalidResponseException
+     * @throws \Throwable
      */
     public function __call(string $methodName, array $ars = []): \Promopult\Integra\Response
     {
@@ -79,7 +82,8 @@ class Client
             $methodName,
             $ars[0],         // data
             $ars[1] ?? null, // userHash
-            $ars[2] ?? []    // queryParams
+            $ars[2] ?? null, // queryParams
+            $ars[3] ?? null  // post
         );
     }
 
@@ -128,7 +132,12 @@ class Client
 
     /* Protected */
 
-    protected function send(\Promopult\Integra\Request $request): \Promopult\Integra\Response
+    /**
+     * @throws \Throwable
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseException
+     */
+    protected function send(Request $request): Response
     {
         $httpRequest = new \GuzzleHttp\Psr7\Request(
             'POST',
@@ -141,10 +150,18 @@ class Client
 
         $this->lastHttpRequest = $httpRequest;
 
-        $httpResponse = $this->httpClient->sendRequest($httpRequest);
-
-        $this->lastHttpResponse = $httpResponse;
-
-        return \Promopult\Integra\Response::fromHttpResponse($httpResponse);
+        try {
+            $httpResponse = $this->httpClient->sendRequest($httpRequest);
+            $this->lastHttpResponse = $httpResponse;
+            return Response::fromHttpResponse($httpResponse);
+        } catch (\Throwable $e) {
+            if (
+                method_exists($e, 'getResponse')
+                && $e->getResponse() instanceof \Psr\Http\Message\ResponseInterface
+            ) {
+                $this->lastHttpResponse = $e->getResponse();
+            }
+            throw $e;
+        }
     }
 }
