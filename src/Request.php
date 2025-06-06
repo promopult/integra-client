@@ -2,8 +2,6 @@
 
 namespace Promopult\Integra;
 
-use GuzzleHttp\Psr7\Stream;
-
 final class Request
 {
     private string $method;
