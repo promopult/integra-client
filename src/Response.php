@@ -4,26 +4,24 @@ namespace Promopult\Integra;
 
 use Promopult\Integra\Exceptions\InvalidResponseException;
 
-final class Response
+final readonly class Response
 {
-    private string $version;
-    private bool $hasError;
-    private int $statusCode;
-    private string $statusMessage;
-    private array $notices;
+    public function __construct(
+        private string $version,
+        private bool $hasError,
+        private int $statusCode,
+        private string $statusMessage,
+        private array $notices,
+        private mixed $data,
+    ) {
+    }
 
     /**
-     * @var mixed
+     * @throws \JsonException
      */
-    private $data;
-
     public static function fromHttpResponse(\Psr\Http\Message\ResponseInterface $response): self
     {
-        $parsedBody = json_decode($response->getBody()->__toString(), true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidResponseException(json_last_error_msg());
-        }
+        $parsedBody = json_decode($response->getBody()->__toString(), true, 512, JSON_THROW_ON_ERROR);
 
         return new self(
             (string) $parsedBody['version'],
@@ -35,26 +33,7 @@ final class Response
         );
     }
 
-    public function __construct(
-        string $version,
-        bool $hasError,
-        int $statusCode,
-        string $statusMessage,
-        array $notices,
-        $data
-    ) {
-        $this->version = $version;
-        $this->hasError = $hasError;
-        $this->statusCode = $statusCode;
-        $this->statusMessage = $statusMessage;
-        $this->notices = $notices;
-        $this->data = $data;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode([
             'version' => $this->getVersion(),
@@ -68,50 +47,32 @@ final class Response
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function hasError(): bool
     {
         return $this->hasError;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStatusMessage(): string
     {
         return $this->statusMessage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getNotices(): array
     {
         return $this->notices;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }

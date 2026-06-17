@@ -44,14 +44,13 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             //new \GuzzleHttp\Exception\RequestException("Error Communicating with Server", new \GuzzleHttp\Psr7\Request('GET', 'test'))
         ]);
 
-        $httpClient = new \GuzzleHttp\Client([
-            'handler' => \GuzzleHttp\HandlerStack::create($mock)
-        ]);
-
         return new \Promopult\Integra\Client(
             new \Promopult\Integra\Test\CredentialsMock,
             new \Promopult\Integra\Test\CryptMock,
-            $httpClient
+            new \GuzzleHttp\Client([
+                'handler' => \GuzzleHttp\HandlerStack::create($mock)
+            ]),
+            new \GuzzleHttp\Psr7\HttpFactory()
         );
     }
 

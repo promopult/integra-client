@@ -5,7 +5,11 @@ namespace Promopult\Integra;
 use Promopult\Integra\Exceptions\InvalidResponseException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
 
 /**
@@ -29,21 +33,15 @@ use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
  */
 class Client
 {
-    protected CredentialsInterface $credentials;
-    protected CryptInterface $crypt;
-    protected ClientInterface $httpClient;
-
     protected ?Psr7RequestInterface $lastHttpRequest = null;
     protected ?Psr7ResponseInterface $lastHttpResponse = null;
 
     public function __construct(
-        CredentialsInterface $identity,
-        CryptInterface $crypt,
-        ClientInterface $httpClient
+        protected readonly CredentialsInterface $credentials,
+        protected readonly CryptInterface $crypt,
+        protected readonly ClientInterface $httpClient,
+        protected readonly RequestFactoryInterface $requestFactory
     ) {
-        $this->credentials = $identity;
-        $this->crypt = $crypt;
-        $this->httpClient = $httpClient;
     }
 
     /**
@@ -110,7 +108,7 @@ class Client
     public function getLastHttpResponseAsString(): string
     {
         if ($this->lastHttpResponse instanceof \Psr\Http\Message\ResponseInterface) {
-            return \GuzzleHttp\Psr7\Message::toString($this->getLastHttpResponse());
+            return self::toString($this->getLastHttpResponse());
         }
 
         return '';
@@ -119,7 +117,7 @@ class Client
     public function getLastHttpRequestAsString(): string
     {
         if ($this->lastHttpRequest instanceof \Psr\Http\Message\RequestInterface) {
-            return \GuzzleHttp\Psr7\Message::toString($this->getLastHttpRequest());
+            return self::toString($this->getLastHttpRequest());
         }
 
         return '';
@@ -139,20 +137,24 @@ class Client
      */
     protected function send(Request $request): Response
     {
-        $httpRequest = new \GuzzleHttp\Psr7\Request(
-            'POST',
-            $request->getCryptUrl(),
-            [
-                'Content-Type' => 'application/json',
-            ],
-            $request->getPost()
-        );
+        $httpRequest = $this->requestFactory
+            ->createRequest('POST', $request->getCryptUrl())
+            ->withHeader('Content-Type', 'application/json')
+        ;
 
         $this->lastHttpRequest = $httpRequest;
 
         try {
             $httpResponse = $this->httpClient->sendRequest($httpRequest);
             $this->lastHttpResponse = $httpResponse;
+
+            if ($httpResponse->getStatusCode() !== 200) {
+                throw new InvalidResponseException(
+                    $httpRequest,
+                    $httpResponse
+                );
+            }
+
             return Response::fromHttpResponse($httpResponse);
         } catch (\Throwable $e) {
             if (
@@ -163,5 +165,35 @@ class Client
             }
             throw $e;
         }
+    }
+
+    protected static function toString(MessageInterface $message): string
+    {
+        if ($message instanceof RequestInterface) {
+            $msg = trim($message->getMethod().' '
+                    .$message->getRequestTarget())
+                .' HTTP/'.$message->getProtocolVersion();
+            if (!$message->hasHeader('host')) {
+                $msg .= "\r\nHost: ".$message->getUri()->getHost();
+            }
+        } elseif ($message instanceof ResponseInterface) {
+            $msg = 'HTTP/'.$message->getProtocolVersion().' '
+                .$message->getStatusCode().' '
+                .$message->getReasonPhrase();
+        } else {
+            throw new \InvalidArgumentException('Unknown message type');
+        }
+
+        foreach ($message->getHeaders() as $name => $values) {
+            if (is_string($name) && strtolower($name) === 'set-cookie') {
+                foreach ($values as $value) {
+                    $msg .= "\r\n{$name}: ".$value;
+                }
+            } else {
+                $msg .= "\r\n{$name}: ".implode(', ', $values);
+            }
+        }
+
+        return "{$msg}\r\n\r\n".$message->getBody();
     }
 }

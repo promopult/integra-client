@@ -5,7 +5,8 @@ require_once '../vendor/autoload.php';
 $client = new \Promopult\Integra\Client(
     new \Promopult\Integra\Credentials(getenv('__HASH__'), getenv('__CRYPT_KEY__')),
     new \AcmeCrypt(),
-    new \GuzzleHttp\Client
+    new \GuzzleHttp\Client(),
+    new \GuzzleHttp\Psr7\HttpFactory()
 );
 
 $response = $client->createUser([

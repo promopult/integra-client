@@ -6,27 +6,21 @@ interface CredentialsInterface
 {
     /**
      * Returns 32-symbol identity hash
-     *
-     * @return string
      */
     public function getHash(): string;
 
     /**
      * Returns crypt-key for data encode/decode
-     *
-     * @return string
      */
     public function getCryptKey(): string;
 
     /**
-     * Partner path is a namespace of a custom partner methods.
-     *
-     * @return string
+     * Partner path is a namespace of the custom partner methods.
      */
     public function getPartnerPath(): string;
 
     /**
-     * @return string
+     * Retrieves the API host URL as a string.
      */
     public function getApiHost(): string;
 }

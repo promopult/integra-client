@@ -2,32 +2,17 @@
 
 namespace Promopult\Integra;
 
-final class Request
+final readonly class Request
 {
-    private string $method;
-    private array $args;
-    private CredentialsInterface $identity;
-    private CryptInterface $crypt;
-    private ?string $userHash;
-    private ?array $queryParams;
-    private ?array $post;
-
     public function __construct(
-        string $method,
-        array $args,
-        CredentialsInterface $identity,
-        CryptInterface $crypt,
-        ?string $userHash,
-        ?array $queryParams,
-        ?array $post
+        private string $method,
+        private array $args,
+        private CredentialsInterface $identity,
+        private CryptInterface $crypt,
+        private ?string $userHash,
+        private ?array $queryParams,
+        private ?array $post,
     ) {
-        $this->method = $method;
-        $this->args = $args;
-        $this->identity = $identity;
-        $this->crypt = $crypt;
-        $this->userHash = $userHash;
-        $this->queryParams = $queryParams;
-        $this->post = $post;
     }
 
     public function getCryptUrl(): string
